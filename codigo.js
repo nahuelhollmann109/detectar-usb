@@ -55,7 +55,7 @@ btn2.addEventListener("click", async(e) => {
  device.open()
     .then(() => {
       // Seleccionar configuración e interfaz (ajusta según tu dispositivo)
-      HTMLFormControlsCollection.log(device.configurations);
+      console.log(device.configurations);
       const configuration = device.configurations;
       const interface = configuration.interfaces[0];
       console.log( interface.endpoints);
