@@ -1,4 +1,52 @@
 const btn = document.querySelector(".btn");
+
+btn.addEventListener("click", async (e) => {
+  e.preventDefault();
+  try {
+      const device = await navigator.usb.requestDevice({ filters: [{ vendorId: 0x10C4, productId: 0xEA60 }] });
+      console.log("Dispositivo conectado:", device);
+      await device.open();
+      // Seleccionar configuración e interfaz (ajusta según tu dispositivo)
+      let configuration, interface, endpoint;
+      for (configuration of device.configurations) {
+          for (interface of configuration.interfaces) {
+              for (endpoint of interface.endpoints) {
+                  // Verificar si el endpoint es de entrada (ajusta según tus necesidades)
+                  if (endpoint.direction === 'in') {
+                      break;
+                  }
+              }
+              if (endpoint) {
+                  break;
+              }
+          }
+          if (endpoint) {
+              break;
+          }
+      }
+      
+      if (!endpoint) {
+          throw new Error('No se encontró un endpoint de entrada válido');
+      }
+      // Crear una tubería
+      const result = await endpoint.transferIn(64); // 64 bytes es un tamaño de transferencia común, ajusta según sea necesario
+      console.log("Datos recibidos:", result.data);
+
+      // Continuar leyendo datos
+      await endpoint.transferIn(64);
+  } catch (error) {
+      if (error.name === 'SecurityError') {
+          console.error('Permiso denegado por el usuario', error);
+      } else {
+          console.error('Error al abrir el dispositivo:', error);
+      }
+  }
+});
+
+
+
+
+
 // navigator.usb.requestDevice()
 //   .then(devices => {
 //     // Mostrar una lista de dispositivos al usuario
@@ -53,48 +101,7 @@ const btn = document.querySelector(".btn");
 //   });
 // })
 
-btn.addEventListener("click", async (e) => {
-  e.preventDefault();
-  try {
-      const device = await navigator.usb.requestDevice({ filters: [{ vendorId: 0x10C4, productId: 0xEA60 }] });
-      console.log("Dispositivo conectado:", device);
-      await device.open();
-      // Seleccionar configuración e interfaz (ajusta según tu dispositivo)
-      let configuration, interface, endpoint;
-      for (configuration of device.configurations) {
-          for (interface of configuration.interfaces) {
-              for (endpoint of interface.endpoints) {
-                  // Verificar si el endpoint es de entrada (ajusta según tus necesidades)
-                  if (endpoint.direction === 'in') {
-                      break;
-                  }
-              }
-              if (endpoint) {
-                  break;
-              }
-          }
-          if (endpoint) {
-              break;
-          }
-      }
-      
-      if (!endpoint) {
-          throw new Error('No se encontró un endpoint de entrada válido');
-      }
-      // Crear una tubería
-      const result = await endpoint.transferIn(64); // 64 bytes es un tamaño de transferencia común, ajusta según sea necesario
-      console.log("Datos recibidos:", result.data);
 
-      // Continuar leyendo datos
-      await endpoint.transferIn(64);
-  } catch (error) {
-      if (error.name === 'SecurityError') {
-          console.error('Permiso denegado por el usuario', error);
-      } else {
-          console.error('Error al abrir el dispositivo:', error);
-      }
-  }
-});
 
 
 
