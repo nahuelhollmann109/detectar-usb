@@ -60,10 +60,27 @@ btn.addEventListener("click", async (e) => {
       console.log("Dispositivo conectado:", device);
       await device.open();
       // Seleccionar configuración e interfaz (ajusta según tu dispositivo)
-      const configuration = device.configurations[0];
-      const interface = configuration.interfaces[0];
-      const endpoint = interface.endpoints[0]; // Suponiendo que el primer endpoint es de entrada
-
+      let configuration, interface, endpoint;
+      for (configuration of device.configurations) {
+          for (interface of configuration.interfaces) {
+              for (endpoint of interface.endpoints) {
+                  // Verificar si el endpoint es de entrada (ajusta según tus necesidades)
+                  if (endpoint.direction === 'in') {
+                      break;
+                  }
+              }
+              if (endpoint) {
+                  break;
+              }
+          }
+          if (endpoint) {
+              break;
+          }
+      }
+      
+      if (!endpoint) {
+          throw new Error('No se encontró un endpoint de entrada válido');
+      }
       // Crear una tubería
       const result = await endpoint.transferIn(64); // 64 bytes es un tamaño de transferencia común, ajusta según sea necesario
       console.log("Datos recibidos:", result.data);
@@ -81,6 +98,28 @@ btn.addEventListener("click", async (e) => {
 
 
 
+
+// let configuration, interface, endpoint;
+// for (configuration of device.configurations) {
+//     for (interface of configuration.interfaces) {
+//         for (endpoint of interface.endpoints) {
+//             // Verificar si el endpoint es de entrada (ajusta según tus necesidades)
+//             if (endpoint.direction === 'in') {
+//                 break;
+//             }
+//         }
+//         if (endpoint) {
+//             break;
+//         }
+//     }
+//     if (endpoint) {
+//         break;
+//     }
+// }
+
+// if (!endpoint) {
+//     throw new Error('No se encontró un endpoint de entrada válido');
+// }
 
 // navigator.usb.requestDevice({ filters: [{  vendorId: 0x10C4, productId: 0xEA60 }] })
 //   .then(device => {
