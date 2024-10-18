@@ -1,4 +1,5 @@
 const btn = document.querySelector(".btn");
+const btn2 = document.querySelector(".btn-2");
 
 btn.addEventListener("click", async (e) => {
   e.preventDefault();
@@ -46,6 +47,44 @@ btn.addEventListener("click", async (e) => {
 
 
 
+btn2.addEventListener("click", async(e) => {
+  e.preventDefault();	
+  await navigator.usb.requestDevice({ filters: [{ vendorId: 0x10C4, productId: 0xEA60 }] })
+.then(device => {
+  console.log("Dispositivo conectado:", device);
+ device.open()
+    .then(() => {
+      // Seleccionar configuración e interfaz (ajusta según tu dispositivo)
+      const configuration = device.configurations[0];
+      const interface = configuration.interfaces[0];
+      const endpoint = interface.endpoints[0]; // Suponiendo que el primer endpoint es de entrada
+
+      // Crear una tubería
+      endpoint.transferIn(64) // 64 bytes es un tamaño de transferencia común, ajusta según sea necesario
+        .then(result => {
+          // Los datos leídos están en result.data
+          console.log("Datos recibidos:", result.data);
+
+          // Continuar leyendo datos
+          endpoint.transferIn(64).then(/* ... */);
+        });
+    }).catch(error => {
+      if (error.name === 'SecurityError') {
+        console.error('User denied permission', error);
+      } else {
+        console.error('Error opening device:', error);
+      }
+    });
+})
+.catch(error => {
+  console.error("Error:", error);
+});
+})
+
+
+
+
+
 
 // navigator.usb.requestDevice()
 //   .then(devices => {
@@ -67,39 +106,7 @@ btn.addEventListener("click", async (e) => {
 //   .catch(error => {
 //     console.error('Error:', error);
 //   });
-// btn.addEventListener("click", async(e) => {
-//     e.preventDefault();	
-//     await navigator.usb.requestDevice({ filters: [{ vendorId: 0x10C4, productId: 0xEA60 }] })
-//   .then(device => {
-//     console.log("Dispositivo conectado:", device);
-//    device.open()
-//       .then(() => {
-//         // Seleccionar configuración e interfaz (ajusta según tu dispositivo)
-//         const configuration = device.configurations[0];
-//         const interface = configuration.interfaces[0];
-//         const endpoint = interface.endpoints[0]; // Suponiendo que el primer endpoint es de entrada
 
-//         // Crear una tubería
-//         endpoint.transferIn(64) // 64 bytes es un tamaño de transferencia común, ajusta según sea necesario
-//           .then(result => {
-//             // Los datos leídos están en result.data
-//             console.log("Datos recibidos:", result.data);
-
-//             // Continuar leyendo datos
-//             endpoint.transferIn(64).then(/* ... */);
-//           });
-//       }).catch(error => {
-//         if (error.name === 'SecurityError') {
-//           console.error('User denied permission', error);
-//         } else {
-//           console.error('Error opening device:', error);
-//         }
-//       });
-//   })
-//   .catch(error => {
-//     console.error("Error:", error);
-//   });
-// })
 
 
 
