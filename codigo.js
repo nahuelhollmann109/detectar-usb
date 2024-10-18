@@ -58,7 +58,7 @@ btn2.addEventListener("click", async(e) => {
       console.log(device.configurations);
       const configuration = device.configurations;
       const interface = configuration.interfaces[0];
-      console.log( interface.endpoints);
+      console.log( interface.endpoints[0]);
       const endpoint = interface.endpoints[0]; // Suponiendo que el primer endpoint es de entrada
 
       // Crear una tubería
