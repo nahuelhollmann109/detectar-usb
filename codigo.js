@@ -109,32 +109,6 @@ btn2.addEventListener("click", async(e) => {
 
 
 
-
-
-
-
-// let configuration, interface, endpoint;
-// for (configuration of device.configurations) {
-//     for (interface of configuration.interfaces) {
-//         for (endpoint of interface.endpoints) {
-//             // Verificar si el endpoint es de entrada (ajusta según tus necesidades)
-//             if (endpoint.direction === 'in') {
-//                 break;
-//             }
-//         }
-//         if (endpoint) {
-//             break;
-//         }
-//     }
-//     if (endpoint) {
-//         break;
-//     }
-// }
-
-// if (!endpoint) {
-//     throw new Error('No se encontró un endpoint de entrada válido');
-// }
-
 // navigator.usb.requestDevice({ filters: [{  vendorId: 0x10C4, productId: 0xEA60 }] })
 //   .then(device => {
 //     // Aquí puedes trabajar con el dispositivo seleccionado por el usuario
